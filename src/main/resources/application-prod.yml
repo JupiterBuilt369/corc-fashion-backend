@@ -1,9 +1,7 @@
 spring:
-  profiles: active: prod
   jpa:
-    show-sql: false
     hibernate:
-      ddl-auto: validate # Use validate in production, or use Flyway/Liquibase
+      ddl-auto: validate
   mail:
     properties:
       mail:
@@ -11,15 +9,12 @@ spring:
           auth: true
           starttls:
             enable: true
-          # If using SSL, uncomment and adjust:
-          # ssl:
-          #   trust: smtp.gmail.com
 logging:
   level:
     root: WARN
     org.springframework.web: INFO
     com.corc: INFO
-    org.hibernate.SQL: DEBUG # Optional, for debugging SQL if needed
+    org.hibernate.SQL: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
 management:
@@ -29,20 +24,4 @@ management:
         include: health,info,metrics
   endpoint:
     health:
-      show-details: always
-# Override any other production-specific settings
-app:
-  jwt:
-    # Ensure JWT secret is set via environment variable in production
-    # Example: JWT_SECRET=your_strong_secret_here
-    access-token-expiration-ms: 900000
-    refresh-token-expiration-ms: 604800000
-  cors:
-    # Set allowed origins for production, e.g., your frontend domain
-    allowed-origins: ${CORS_ORIGINS:https://yourdomain.com}
-  frontend-url: ${FRONTEND_URL:https://yourfrontend.com}
-# Example: disable H2 console in production (if added)
-spring:
-  h2:
-    console:
-      enabled: false
+      show-details: true
