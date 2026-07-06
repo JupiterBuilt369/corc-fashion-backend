@@ -13,6 +13,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,7 +42,13 @@ public class DataSeeder implements CommandLineRunner {
     private final WishlistItemRepository wishlistItemRepository;
     private final AddressRepository addressRepository;
     private final PaymentCardRepository paymentCardRepository;
-    private final NewsletterSubscriptionRepository newsletterSubscriptionRepository;
+private final NewsletterSubscriptionRepository newsletterSubscriptionRepository;
+
+    @Value("${ADMIN_EMAIL:admin@corc.com}")
+    private String adminEmail;
+
+    @Value("${ADMIN_PASSWORD}")
+    private String adminPassword;
 
     @Override
     @Transactional
@@ -74,15 +81,23 @@ public class DataSeeder implements CommandLineRunner {
     // ──────────────────────────────────────────
 
     private void seedAdminUser() {
-        String adminEmail = "admin@corc.com";
-        if (userRepository.findByEmail(adminEmail).isEmpty()) {
+        String email = this.adminEmail;
+        String password = this.adminPassword;
+        if (email == null || email.isEmpty()) {
+            email = "admin@corc.com"; // fallback, though @Value has default
+        }
+        if (password == null || password.isEmpty()) {
+            log.warn("Admin password not set via ADMIN_PASSWORD environment variable. Skipping admin user creation.");
+            return;
+        }
+        if (userRepository.findByEmail(email).isEmpty()) {
             Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN).orElseThrow();
             Role userRole = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow();
 
             User admin = User.builder()
                     .name("CORC Admin")
-                    .email(adminEmail)
-                    .password(passwordEncoder.encode("admin123"))
+                    .email(email)
+                    .password(passwordEncoder.encode(password))
                     .phone("+1-555-000-0000")
                     .avatar("https://ui-avatars.com/api/?name=CORC+Admin&background=c6a87c&color=000")
                     .enabled(true)
@@ -90,7 +105,7 @@ public class DataSeeder implements CommandLineRunner {
                     .build();
 
             userRepository.save(admin);
-            log.info("Seeded admin user: {}", adminEmail);
+            log.info("Seeded admin user: {}", email);
         }
     }
 
