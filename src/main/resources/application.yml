@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: corc-backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/corc_db
+    username: ${DB_USERNAME:corc_user}
+    password: ${DB_PASSWORD:corc_pass}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 16
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:noreply@corc.com}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=600s
+
+server:
+  port: 8080
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:c29yY19zdXBlcl9zZWNyZXRfa2V5XzEyMzQ1Njc4OTBfYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo=}
+    access-token-expiration-ms: 900000
+    refresh-token-expiration-ms: 604800000
+
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+
+  s3:
+    bucket: ${S3_BUCKET:corc-assets}
+    region: ${S3_REGION:ap-south-1}
+    access-key: ${S3_ACCESS_KEY:}
+    secret-key: ${S3_SECRET_KEY:}
+
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}

@@ -1,0 +1,36 @@
+# Build folders
+build/
+.gradle/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+.factorypath
+
+# Logs
+*.log
+logs/
+
+# Package files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Virtual machine crash logs
+hs_err_pid*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Misc
+*.backup
+*~
